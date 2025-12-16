@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Solace</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      // Initialize dark mode before render to prevent flash
+      if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
+
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['DM Sans', 'sans-serif'],
+              serif: ['Playfair Display', 'serif'],
+              hand: ['Caveat', 'cursive'],
+            },
+            colors: {
+              bg: '#F4F2ED',
+              card: '#FFFFFF',
+              text: '#2D2A26',
+              muted: '#96948F',
+              obsidian: '#1F1D24',
+              charcoal: '#2A2730',
+              clay: '#9E584D',
+              amber: '#D68F54',
+              sage: '#7E8D85',
+              sand: '#E6E2DC',
+              gradientStart: '#2A2730',
+              gradientMid: '#9E584D',
+              gradientEnd: '#D68F54',
+            },
+            boxShadow: {
+              'soft': '0 4px 20px -2px rgba(45, 42, 38, 0.04)',
+              'card': '0 10px 40px -10px rgba(45, 42, 38, 0.08)',
+              'glow': '0 0 20px rgba(214, 143, 84, 0.3)',
+              'orange-glow': '0 8px 30px -5px rgba(214, 143, 84, 0.4)',
+              'inner-light': 'inset 0 2px 0 0 rgba(255, 255, 255, 0.15)',
+            },
+            animation: {
+              'enter': 'enter 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'shimmer': 'shimmer 8s linear infinite',
+              'float': 'float 6s ease-in-out infinite',
+            },
+            keyframes: {
+              enter: {
+                'from': { opacity: '0', transform: 'translateY(10px)' },
+                'to': { opacity: '1', transform: 'translateY(0)' },
+              },
+              shimmer: {
+                '0%': { backgroundPosition: '200% 0' },
+                '100%': { backgroundPosition: '-200% 0' }
+              },
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-5px)' }
+              }
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+      body {
+        background-color: #F4F2ED;
+        color: #2D2A26;
+        -webkit-font-smoothing: antialiased;
+        overscroll-behavior: none;
+      }
+      
+      .dark body {
+        background-color: #1F1D24;
+        color: #F4F2ED;
+      }
+      
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+      .glass-nav {
+        background: rgba(244, 242, 237, 0.85);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+      }
+      
+      .candle-gradient {
+        background: linear-gradient(135deg, #3C3748 0%, #9E584D 60%, #D68F54 100%);
+      }
+
+      .text-shadow {
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+      
+      .mask-gradient-b {
+        mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" class="min-h-screen flex items-center justify-center bg-[#E8E6E1] dark:bg-[#18161C]"></div>
+    <script type="module" src="/src/index.tsx"></script>
+  </body>
+</html>
