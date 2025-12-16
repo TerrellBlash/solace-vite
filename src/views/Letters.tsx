@@ -11,7 +11,7 @@ export const Letters: React.FC<LettersProps> = ({ setView }) => {
     const [step, setStep] = useState('LIST'); 
     
     if (step === 'LIST') return (
-        <div className="h-full flex flex-col bg-bg dark:bg-obsidian pt-12 px-6 relative transition-colors">
+        <div className="min-h-full flex flex-col bg-bg dark:bg-obsidian pt-12 px-6 pb-40 relative transition-colors">
             <div className="flex items-center justify-between mb-8">
                 <BackButton onClick={() => setView(ViewState.HOME)} />
                 <h2 className="font-serif text-2xl text-text dark:text-bg">Legacy Letters</h2>
@@ -45,7 +45,7 @@ export const Letters: React.FC<LettersProps> = ({ setView }) => {
     );
 
     if (step === 'WIZARD_1') return (
-        <div className="h-full flex flex-col bg-bg dark:bg-obsidian pt-12 px-6 transition-colors">
+        <div className="min-h-full flex flex-col bg-bg dark:bg-obsidian pt-12 px-6 pb-40 transition-colors">
             <div className="flex items-center justify-between mb-8">
                 <BackButton onClick={() => setStep('LIST')} />
                 <div className="flex gap-1.5">
@@ -79,7 +79,7 @@ export const Letters: React.FC<LettersProps> = ({ setView }) => {
     );
 
      if (step === 'WIZARD_2') return (
-        <div className="h-full flex flex-col bg-bg dark:bg-obsidian pt-12 px-6 transition-colors">
+        <div className="min-h-full flex flex-col bg-bg dark:bg-obsidian pt-12 px-6 pb-40 transition-colors">
              <div className="flex items-center justify-between mb-8">
                 <BackButton onClick={() => setStep('WIZARD_1')} />
                 <div className="flex gap-1.5">
@@ -104,7 +104,7 @@ export const Letters: React.FC<LettersProps> = ({ setView }) => {
     );
 
      if (step === 'WIZARD_3') return (
-        <div className="h-full flex flex-col bg-bg dark:bg-obsidian pt-12 px-6 pb-8 transition-colors">
+        <div className="min-h-full flex flex-col bg-bg dark:bg-obsidian pt-12 px-6 pb-40 transition-colors">
              <div className="flex items-center justify-between mb-4">
                 <BackButton onClick={() => setStep('WIZARD_2')} />
                 <div className="flex gap-1.5">

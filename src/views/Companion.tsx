@@ -53,7 +53,8 @@ export const Companion: React.FC<CompanionProps> = ({ setView }) => {
             let isFirstChunk = true;
 
             for await (const chunk of streamResult) {
-                const chunkText = chunk.text();
+                // Correctly use the .text property accessor, do not call it as a method
+                const chunkText = chunk.text || "";
                 fullText += chunkText;
                 
                 setMessages(prev => {
@@ -106,9 +107,21 @@ export const Companion: React.FC<CompanionProps> = ({ setView }) => {
                 reader.onloadend = async () => {
                     const base64Audio = reader.result as string;
                     setIsTranscribing(true);
-                    const text = await transcribeAudio(base64Audio);
-                    if (text) setInput(text);
-                    setIsTranscribing(false);
+                    try {
+                        const text = await transcribeAudio(base64Audio);
+                        if (text) {
+                            console.log("Transcription result:", text);
+                            setInput(text);
+                        } else {
+                            console.warn("Transcription returned empty or null");
+                            alert("Couldn't transcribe audio. Please try typing instead.");
+                        }
+                    } catch (error) {
+                        console.error("Transcription failed", error);
+                        alert("Couldn't transcribe audio. Please try typing instead.");
+                    } finally {
+                        setIsTranscribing(false);
+                    }
                 };
                 
                 stream.getTracks().forEach(track => track.stop());

@@ -89,14 +89,14 @@ export const Home: React.FC<HomeProps> = ({ setView }) => {
             {/* Candle Hero */}
             <div 
                 onClick={() => setView(ViewState.CANDLE)}
-                className="w-full aspect-[1.6/1] rounded-[36px] p-8 relative overflow-hidden cursor-pointer shadow-orange-glow group active:scale-[0.99] transition-all animate-enter delay-100 bg-gradient-to-br from-[#4A3B39] via-[#9E584D] to-[#D68F54] border border-white/10"
+                className="w-full h-[220px] rounded-[32px] p-6 relative overflow-hidden cursor-pointer shadow-orange-glow group active:scale-[0.99] transition-all animate-enter delay-100 bg-gradient-to-br from-[#4A3B39] via-[#9E584D] to-[#D68F54] border border-white/10 flex flex-col justify-between"
             >
                  <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
                  
                  {/* Shimmer Effect */}
                  <div className="absolute inset-0 -translate-x-full group-hover:animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent z-0"></div>
                  
-                 <div className="relative z-10 h-full flex flex-col justify-between">
+                 <div className="relative z-10 w-full h-full flex flex-col justify-between">
                      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/10 w-fit">
                          <div className="w-1.5 h-1.5 rounded-full bg-[#D68F54] shadow-[0_0_8px_rgba(214,143,84,0.8)] animate-pulse"></div>
                          <span className="text-[10px] font-bold tracking-[0.15em] text-white/90 uppercase">Daily Ritual</span>
@@ -104,11 +104,11 @@ export const Home: React.FC<HomeProps> = ({ setView }) => {
 
                      <div className="flex justify-between items-end">
                          <div>
-                             <h2 className="font-serif text-[36px] text-white leading-none mb-2 tracking-tight">Light a<br/>Candle</h2>
-                             <p className="text-white/80 text-[15px] font-medium">Reflect & remember.</p>
+                             <h2 className="font-serif text-[32px] text-white leading-none mb-1 tracking-tight">Light a<br/>Candle</h2>
+                             <p className="text-white/80 text-[13px] font-medium">Reflect & remember.</p>
                          </div>
-                         <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-[#FFDDB6] shadow-lg group-hover:bg-white/20 transition-all duration-300 group-hover:scale-105">
-                             <Icon name="flame" size={28} strokeWidth={1.5} fill="currentColor" className="opacity-90 animate-float" />
+                         <div className="w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-[#FFDDB6] shadow-lg group-hover:bg-white/20 transition-all duration-300 group-hover:scale-105">
+                             <Icon name="flame" size={24} strokeWidth={1.5} fill="currentColor" className="opacity-90 animate-float" />
                          </div>
                      </div>
                  </div>
@@ -133,7 +133,7 @@ export const Home: React.FC<HomeProps> = ({ setView }) => {
             </div>
 
             {/* List Items */}
-            <div className="flex flex-col gap-3 mt-4 pb-8">
+            <div className="flex flex-col gap-3 mt-4">
                 <MenuRow 
                     title="Memory Jar"
                     subtitle="Save a thought for today"

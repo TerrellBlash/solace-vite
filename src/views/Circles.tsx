@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { ViewState } from '../types';
-import { BackButton, Icon, Avatar, Button } from '../components/UI';
+import { BackButton, Icon, Avatar } from '../components/UI';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface CirclesProps {
@@ -11,8 +11,13 @@ interface CirclesProps {
 export const CirclesList: React.FC<CirclesProps> = ({ setView }) => {
     const [selectedCircleId, setSelectedCircleId] = useState<number | null>(null);
     const [joinedCircles, setJoinedCircles] = useState<number[]>([]);
+    const [menuOpen, setMenuOpen] = useState(false);
+    
+    // Share Modal State
+    const [showShareModal, setShowShareModal] = useState(false);
+    const [storyText, setStoryText] = useState('');
 
-    const circles = [
+    const [circles, setCircles] = useState([
         { 
             id: 1, 
             title: "Loss of Partner", 
@@ -67,7 +72,7 @@ export const CirclesList: React.FC<CirclesProps> = ({ setView }) => {
                 { user: "Alex T.", time: "6h ago", text: "Visited our favorite coffee spot today. Ordered two coffees out of habit." }
             ]
         },
-    ];
+    ]);
 
     const selectedCircle = circles.find(c => c.id === selectedCircleId);
     const isJoined = selectedCircle ? joinedCircles.includes(selectedCircle.id) : false;
@@ -82,6 +87,55 @@ export const CirclesList: React.FC<CirclesProps> = ({ setView }) => {
         });
     };
 
+    const handleShare = async () => {
+        if (!selectedCircle) return;
+        
+        const shareData = {
+            title: `Solace - ${selectedCircle.title}`,
+            text: `Join the ${selectedCircle.title} circle on Solace.`,
+            url: window.location.href
+        };
+
+        // Try native share first
+        if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+            try {
+                await navigator.share(shareData);
+            } catch (err) {
+                console.log('Share canceled or failed:', err);
+            }
+        } else {
+            // Fallback: copy link to clipboard
+            try {
+                await navigator.clipboard.writeText(window.location.href);
+                // Use a simple alert for feedback since we don't have a toast component globally yet
+                alert('Link copied to clipboard!');
+            } catch (err) {
+                console.error('Clipboard failed', err);
+                alert('Could not share. Please copy the URL manually.');
+            }
+        }
+    };
+    
+    const handlePostStory = () => {
+        if (!storyText.trim() || !selectedCircleId) return;
+        
+        const newPost = {
+            user: "You",
+            time: "Just now",
+            text: storyText
+        };
+
+        setCircles(prev => prev.map(c => {
+            if (c.id === selectedCircleId) {
+                return { ...c, feed: [newPost, ...(c.feed || [])] };
+            }
+            return c;
+        }));
+
+        setStoryText('');
+        setShowShareModal(false);
+    };
+
     // --- LIST VIEW ---
     if (!selectedCircle) {
         return (
@@ -92,7 +146,7 @@ export const CirclesList: React.FC<CirclesProps> = ({ setView }) => {
                     <p className="text-[11px] font-bold text-clay tracking-[0.15em] uppercase">Find your space to heal together</p>
                 </div>
 
-                <div className="flex-1 overflow-y-auto no-scrollbar px-6 space-y-4 pb-32">
+                <div className="flex-1 overflow-y-auto no-scrollbar px-6 space-y-4 pb-40">
                     {circles.map((circle, idx) => {
                         const isCircleJoined = joinedCircles.includes(circle.id);
                         return (
@@ -173,14 +227,41 @@ export const CirclesList: React.FC<CirclesProps> = ({ setView }) => {
              
              <div className="relative z-10 flex flex-col h-full">
                 {/* Navbar */}
-                <div className="pt-12 px-6 flex items-center justify-between">
+                <div className="pt-12 px-6 flex items-center justify-between relative z-50">
                     <BackButton onClick={() => setSelectedCircleId(null)} />
-                    <button className="w-10 h-10 rounded-full bg-white/50 dark:bg-white/10 backdrop-blur-md flex items-center justify-center">
-                        <Icon name="more-horizontal" size={20} className="text-text dark:text-bg" />
-                    </button>
+                    
+                    <div className="relative">
+                        <button 
+                            onClick={() => setMenuOpen(!menuOpen)}
+                            className="w-10 h-10 rounded-full bg-white/50 dark:bg-white/10 backdrop-blur-md flex items-center justify-center active:scale-95 transition-transform"
+                        >
+                            <Icon name="more-horizontal" size={20} className="text-text dark:text-bg" />
+                        </button>
+
+                        <AnimatePresence>
+                            {menuOpen && (
+                                <motion.div 
+                                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                    className="absolute right-0 top-12 w-48 bg-white dark:bg-charcoal rounded-2xl shadow-xl p-2 border border-sand dark:border-white/10 flex flex-col gap-1 overflow-hidden"
+                                >
+                                    <button onClick={() => setMenuOpen(false)} className="w-full text-left px-4 py-3 hover:bg-bg dark:hover:bg-white/5 rounded-xl text-sm font-medium text-text dark:text-bg transition-colors flex items-center gap-2">
+                                        <Icon name="plus-circle" size={16} /> Create Circle
+                                    </button>
+                                    <button onClick={() => { setSelectedCircleId(null); setMenuOpen(false); }} className="w-full text-left px-4 py-3 hover:bg-bg dark:hover:bg-white/5 rounded-xl text-sm font-medium text-text dark:text-bg transition-colors flex items-center gap-2">
+                                        <Icon name="grid" size={16} /> Browse All
+                                    </button>
+                                    <button onClick={() => setMenuOpen(false)} className="w-full text-left px-4 py-3 hover:bg-bg dark:hover:bg-white/5 rounded-xl text-sm font-medium text-text dark:text-bg transition-colors flex items-center gap-2">
+                                        <Icon name="user" size={16} /> My Circles
+                                    </button>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto no-scrollbar pt-4 pb-32">
+                <div className="flex-1 overflow-y-auto no-scrollbar pt-4 pb-40">
                     {/* Circle Info */}
                     <div className="px-6 mb-8 text-center flex flex-col items-center animate-enter">
                          <div className={`w-20 h-20 rounded-[32px] ${selectedCircle.iconBg} dark:bg-obsidian border-4 border-white dark:border-charcoal shadow-xl flex items-center justify-center ${selectedCircle.iconColor} mb-4`}>
@@ -213,7 +294,10 @@ export const CirclesList: React.FC<CirclesProps> = ({ setView }) => {
                                     Circle Closed
                                 </button>
                             )}
-                            <button className="w-12 h-12 rounded-full border border-sand dark:border-white/10 flex items-center justify-center text-text dark:text-bg hover:bg-white dark:hover:bg-white/5 transition-colors">
+                            <button 
+                                onClick={handleShare}
+                                className="w-12 h-12 rounded-full border border-sand dark:border-white/10 flex items-center justify-center text-text dark:text-bg hover:bg-white dark:hover:bg-white/5 transition-colors active:scale-95"
+                            >
                                 <Icon name="share" size={18} />
                             </button>
                         </div>
@@ -252,13 +336,65 @@ export const CirclesList: React.FC<CirclesProps> = ({ setView }) => {
                         </div>
                         
                         {selectedCircle.active && (
-                            <div className="mt-6 p-4 rounded-[24px] border-2 border-dashed border-sand dark:border-white/10 flex flex-col items-center justify-center text-center gap-2 text-muted hover:bg-bg dark:hover:bg-obsidian/50 transition-colors cursor-pointer">
-                                <Icon name="pen-tool" size={20} />
-                                <p className="text-sm font-medium">Share your story...</p>
-                            </div>
+                            <button 
+                                onClick={() => setShowShareModal(true)}
+                                className="w-full mt-6 p-6 rounded-2xl border-2 border-dashed border-[#A8A29E]/30 flex flex-col items-center justify-center text-center gap-2 text-[#A8A29E] hover:bg-black/5 dark:hover:bg-white/5 transition-colors active:scale-[0.98]"
+                            >
+                                <Icon name="pen-tool" size={20} className="mb-1 text-[#A8A29E]" />
+                                <span className="text-sm font-medium">Share your story...</span>
+                            </button>
                         )}
                     </div>
                 </div>
+
+                <AnimatePresence>
+                    {showShareModal && (
+                        <motion.div 
+                            initial={{ opacity: 0 }} 
+                            animate={{ opacity: 1 }} 
+                            exit={{ opacity: 0 }}
+                            className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-4"
+                        >
+                             <motion.div 
+                                initial={{ y: 100, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                exit={{ y: 100, opacity: 0 }}
+                                className="bg-white dark:bg-charcoal w-full max-w-md rounded-[32px] p-6 shadow-2xl border border-white/10"
+                             >
+                                <div className="flex justify-between items-center mb-4">
+                                    <h3 className="font-serif text-xl text-text dark:text-bg">Share Your Story</h3>
+                                    <button onClick={() => setShowShareModal(false)} className="text-muted hover:text-text dark:hover:text-bg">
+                                        <Icon name="x" size={20} />
+                                    </button>
+                                </div>
+                                
+                                <textarea 
+                                    value={storyText}
+                                    onChange={(e) => setStoryText(e.target.value)}
+                                    className="w-full bg-bg dark:bg-obsidian rounded-[24px] p-4 text-text dark:text-bg min-h-[140px] outline-none resize-none border border-transparent focus:border-amber/50 transition-all placeholder:text-muted/50 font-serif text-lg leading-relaxed"
+                                    placeholder="What's on your heart today?"
+                                    autoFocus
+                                />
+                                
+                                <div className="flex gap-3 mt-6">
+                                    <button 
+                                        onClick={() => setShowShareModal(false)}
+                                        className="flex-1 py-3.5 rounded-full border border-sand dark:border-white/10 text-muted font-medium hover:bg-bg dark:hover:bg-white/5 transition-colors"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button 
+                                        onClick={handlePostStory}
+                                        disabled={!storyText.trim()}
+                                        className={`flex-1 py-3.5 rounded-full font-medium shadow-lg transition-all ${storyText.trim() ? 'bg-amber text-white hover:brightness-110' : 'bg-sand/50 dark:bg-white/5 text-muted cursor-not-allowed'}`}
+                                    >
+                                        Share
+                                    </button>
+                                </div>
+                            </motion.div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
              </div>
         </div>
     );

@@ -166,36 +166,37 @@ export const Candle: React.FC<CandleProps> = ({ setView }) => {
                                     <div className="absolute top-1 left-1/2 -translate-x-1/2 w-[70%] h-2 bg-black/20 rounded-[50%] blur-[2px]"></div>
                                 </motion.div>
                             </div>
-                            
-                            {/* Breathing Text */}
-                            <div className="mt-12 h-8 text-center relative z-20">
-                                <motion.p 
-                                    key={isBreathingIn ? 'in' : 'out'}
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 0.8 }}
-                                    exit={{ opacity: 0 }}
-                                    transition={{ duration: 0.5 }}
-                                    className="font-serif text-xl text-[#F4F2ED] tracking-wide"
-                                >
-                                    {isBreathingIn ? 'Breathe in...' : 'Breathe out...'}
-                                </motion.p>
-                            </div>
                         </div>
 
-                        {/* Footer */}
-                        <motion.div 
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 1.5, duration: 0.8 }}
-                            className="w-full"
-                        >
-                             <button 
-                                onClick={() => setView(ViewState.HOME)}
-                                className="w-full py-4 rounded-[24px] bg-[#D69F67] text-[#3E2D20] font-serif text-lg tracking-wide shadow-[0_4px_20px_rgba(214,159,103,0.3)] hover:brightness-105 transition-all font-medium"
+                        {/* Breathing Text & Footer */}
+                        <div className="w-full relative z-20 flex flex-col items-center gap-6">
+                            
+                            {/* Breathing Text - Moved here to ensure it's above the button */}
+                            <motion.p 
+                                key={isBreathingIn ? 'in' : 'out'}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 0.8 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.5 }}
+                                className="font-serif text-xl text-[#F4F2ED] tracking-wide"
                             >
-                                End Ritual
-                            </button>
-                        </motion.div>
+                                {isBreathingIn ? 'Breathe in...' : 'Breathe out...'}
+                            </motion.p>
+                            
+                            <motion.div 
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 1.5, duration: 0.8 }}
+                                className="w-full"
+                            >
+                                 <button 
+                                    onClick={() => setView(ViewState.HOME)}
+                                    className="w-full py-4 rounded-[24px] bg-[#D69F67] text-[#3E2D20] font-serif text-lg tracking-wide shadow-[0_4px_20px_rgba(214,159,103,0.3)] hover:brightness-105 transition-all font-medium"
+                                >
+                                    End Ritual
+                                </button>
+                            </motion.div>
+                        </div>
 
                     </motion.div>
                 )}
